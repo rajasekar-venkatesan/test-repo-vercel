@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from mangum import Mangum
 
 app = FastAPI()
 
@@ -9,11 +8,13 @@ async def root():
 
 @app.get("/api/hello")
 async def hello():
-    return {"message": "Hello from API route"}
+    return {"message": "Hello from the API"}
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"item_id": item_id, "description": "This is item " + str(item_id)}
+@app.get("/api/items/{item_id}")
+async def get_item(item_id: int, q: str = None):
+    return {"item_id": item_id, "query": q}
 
-# This handler is required for Vercel serverless deployment
-handler = Mangum(app)
+# For local testing
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
